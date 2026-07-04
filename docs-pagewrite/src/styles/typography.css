@@ -1,0 +1,185 @@
+/* Custom Markdown Content Formatting styles (Typography) */
+.prose {
+  font-family: var(--font-body);
+}
+
+.prose h1 {
+  font-family: var(--font-heading);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-heading);
+  color: var(--color-text-title);
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+  line-height: var(--heading-line-height);
+}
+
+.prose h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--heading-weight);
+  letter-spacing: -0.02em;
+  color: var(--color-text-title);
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-line);
+  padding-bottom: var(--space-2);
+  line-height: var(--heading-line-height);
+}
+
+.prose h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-title);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+  line-height: var(--heading-line-height);
+}
+
+.prose h4 {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-title);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.prose p {
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+  line-height: var(--paragraph-line-height);
+  color: var(--color-text-main);
+  font-size: var(--text-base);
+}
+
+.prose strong {
+  color: var(--color-text-title);
+  font-weight: 600;
+}
+
+.prose a {
+  color: var(--color-text-title);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 2px dashed var(--color-primary-500);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.prose a:hover {
+  border-bottom-style: solid;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background-color: var(--code-bg);
+  color: var(--color-text-title);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--code-border);
+  transition: background-color var(--duration-fast), border-color var(--duration-fast);
+}
+
+.prose pre {
+  margin: var(--space-6) 0;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--code-bg) !important;
+  border: 1px solid var(--code-border) !important;
+}
+
+/* Shiki class-based theme toggle overrides */
+pre.astro-code,
+.prose pre {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+  border: 1px solid var(--code-border) !important;
+}
+pre.astro-code span,
+.prose pre span {
+  color: var(--shiki-dark) !important;
+}
+
+html.light pre.astro-code,
+html.light .prose pre {
+  background-color: var(--shiki-light-bg) !important;
+  color: var(--shiki-light) !important;
+  border: 1px solid var(--code-border) !important;
+}
+html.light pre.astro-code span,
+html.light .prose pre span {
+  color: var(--shiki-light) !important;
+}
+
+.prose pre code {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  font-size: var(--text-sm) !important;
+}
+
+.prose ul, .prose ol {
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+  padding-left: var(--space-6);
+  line-height: var(--paragraph-line-height);
+  color: var(--color-text-main);
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.prose blockquote {
+  margin: var(--space-6) 0 var(--space-6) -20px;
+  padding-left: 17px;
+  border-left: 3px solid var(--color-text-title);
+  color: var(--color-text-title);
+  font-style: italic;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-6) 0;
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.prose th {
+  border-bottom: 2px solid var(--color-border-card);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  color: var(--color-text-title);
+}
+
+.prose td {
+  border-bottom: 1px solid var(--color-border-line);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-main);
+}
+
+.prose tr:hover td {
+  color: var(--color-text-title);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border-line);
+  margin: var(--space-10) 0;
+}

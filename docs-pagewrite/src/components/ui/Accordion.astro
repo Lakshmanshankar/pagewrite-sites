@@ -1,0 +1,41 @@
+---
+interface Props {
+  title: string;
+  open?: boolean;
+}
+
+const { title, open = false } = Astro.props;
+---
+
+<details class="group my-4 rounded-lg border border-border-line bg-bg-card/50 text-text-main overflow-hidden transition-all" {open}>
+  <summary class="flex items-center justify-between cursor-pointer p-4 font-medium text-text-title hover:bg-bg-sidebar/50 transition-colors list-none [&::-webkit-details-marker]:hidden">
+    <span>{title}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 transition-transform duration-200 group-open:rotate-180 text-text-muted"><path d="m6 9 6 6 6-6"/></svg>
+  </summary>
+  <div class="px-4 pb-4 pt-1 text-text-main prose prose-sm max-w-none animate-slide-up border-t border-border-line/50">
+    <slot />
+  </div>
+</details>
+
+<style>
+  /* Base animation for details content */
+  details > div {
+    display: none;
+  }
+  
+  details[open] > div {
+    display: block;
+    animation: accordion-down var(--duration-fast) var(--ease-standard);
+  }
+
+  @keyframes accordion-down {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

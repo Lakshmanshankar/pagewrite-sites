@@ -1,0 +1,122 @@
+---
+---
+<div class="relative inline-block text-left" id="page-actions-dropdown">
+  <button
+    id="page-actions-trigger"
+    class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md border border-border-line hover:bg-bg-card text-text-muted hover:text-text-title transition-colors text-xs font-medium cursor-pointer shadow-xs"
+    aria-haspopup="true"
+    aria-expanded="false"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>AI Actions</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1 opacity-60"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+
+  <div
+    id="page-actions-menu"
+    class="hidden absolute right-0 mt-2 w-48 rounded-lg border border-border-line bg-bg-sidebar shadow-lg p-1 z-50 origin-top-right transition-all transform opacity-0 scale-95"
+  >
+    <button id="copy-markdown-btn" class="w-full text-left flex items-center px-3 py-2 text-xs text-text-muted hover:text-text-title hover:bg-bg-card rounded-md transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+      Copy Markdown
+    </button>
+    <div class="h-px w-full bg-border-line/50 my-1"></div>
+    <button id="open-chatgpt-btn" class="w-full text-left flex items-center px-3 py-2 text-xs text-text-muted hover:text-text-title hover:bg-bg-card rounded-md transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Open in ChatGPT
+    </button>
+    <button id="open-claude-btn" class="w-full text-left flex items-center px-3 py-2 text-xs text-text-muted hover:text-text-title hover:bg-bg-card rounded-md transition-colors cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Open in Claude
+    </button>
+  </div>
+</div>
+
+<script>
+  const trigger = document.getElementById('page-actions-trigger');
+  const menu = document.getElementById('page-actions-menu');
+  let isOpen = false;
+
+  function toggleMenu() {
+    isOpen = !isOpen;
+    if (isOpen) {
+      menu?.classList.remove('hidden');
+      setTimeout(() => {
+        menu?.classList.remove('opacity-0', 'scale-95');
+        menu?.classList.add('opacity-100', 'scale-100');
+      }, 10);
+      trigger?.setAttribute('aria-expanded', 'true');
+    } else {
+      menu?.classList.remove('opacity-100', 'scale-100');
+      menu?.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => {
+        menu?.classList.add('hidden');
+      }, 150);
+      trigger?.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (isOpen && !menu?.contains(e.target as Node)) {
+      toggleMenu();
+    }
+  });
+
+  async function getRawMarkdown() {
+    try {
+      const res = await fetch('/search-index.json');
+      const data = await res.json();
+      
+      const currentPath = window.location.pathname.replace(/\/$/, '');
+      const slugMatch = currentPath.match(/\/docs\/(.+)/);
+      const slug = slugMatch ? slugMatch[1] : '';
+      
+      const doc = data.find((d: any) => d.slug === slug || (slug === '' && d.slug === ''));
+      if (doc && doc.content) {
+        return doc.content;
+      }
+      return "No markdown content found for this page.";
+    } catch (err) {
+      console.error(err);
+      return "Error fetching markdown.";
+    }
+  }
+
+  document.getElementById('copy-markdown-btn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('copy-markdown-btn');
+    const originalText = btn!.innerHTML;
+    try {
+      const content = await getRawMarkdown();
+      await navigator.clipboard.writeText(content);
+      if (btn) btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><polyline points="20 6 9 17 4 12"/></svg> <span class="text-emerald-500">Copied!</span>`;
+    } catch (e) {
+      console.error(e);
+      if (btn) btn.innerHTML = `<span class="text-red-500">Failed</span>`;
+    }
+    setTimeout(() => {
+      if (btn) btn.innerHTML = originalText;
+      toggleMenu();
+    }, 2000);
+  });
+
+  document.getElementById('open-chatgpt-btn')?.addEventListener('click', async () => {
+    const content = await getRawMarkdown();
+    const prompt = `Here is the markdown documentation:\n\n${content}\n\n`;
+    const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+    window.open(url, '_blank');
+    toggleMenu();
+  });
+
+  document.getElementById('open-claude-btn')?.addEventListener('click', async () => {
+    const content = await getRawMarkdown();
+    await navigator.clipboard.writeText(`Here is the markdown documentation:\n\n${content}\n\n`);
+    alert('Markdown copied to clipboard! Paste it when Claude opens.');
+    window.open('https://claude.ai/new', '_blank');
+    toggleMenu();
+  });
+</script>

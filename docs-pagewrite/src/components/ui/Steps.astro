@@ -1,0 +1,40 @@
+---
+---
+
+<div class="steps-container my-8 ml-4 border-l border-border-line/50 border-dashed pl-8 relative">
+  <slot />
+</div>
+
+<style is:global>
+  .steps-container > h3,
+  .steps-container > h4 {
+    position: relative;
+    margin-top: 2rem !important;
+  }
+  
+  .steps-container > h3::before,
+  .steps-container > h4::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: -2.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-bg-page);
+    border: 1px solid var(--color-border-line);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+  
+  .steps-container {
+    counter-reset: step;
+  }
+</style>

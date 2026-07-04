@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@import "./variable.css";
+@import "./typography.css";
+@import "./animations.css";
+
+/* @font-face { */
+/*   font-family: 'Bamini'; */
+/*   src: url('../assets/Bamini_Tamil_56.ttf') format('truetype'); */
+/*   font-weight: normal; */
+/*   font-style: normal; */
+/*   font-display: swap; */
+/* } */
+
+@theme {
+  /* Primary Theme Color Palette (Neutral Accent) */
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+
+  /* Semantic Theme Color Mappings */
+  --color-bg-page: var(--bg-page);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-bg-card: var(--bg-card);
+  --color-text-main: var(--text-main);
+  --color-text-title: var(--text-title);
+  --color-text-muted: var(--text-muted);
+  --color-border-line: var(--border-line);
+  --color-border-card: var(--border-card);
+
+  /* We map standard Tailwind classes to our custom variables */
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+/* Base custom styles */
+html {
+  font-size: var(--text-base);
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--space-10);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
+  transition: background-color var(--duration-normal) var(--ease-standard), color var(--duration-normal) var(--ease-standard);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-card);
+  border-radius: var(--radius);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* Sun/Moon Toggle Icons */
+html.light .sun-icon {
+  display: none !important;
+}
+html.light .moon-icon {
+  display: block !important;
+}
+html:not(.light) .sun-icon {
+  display: block !important;
+}
+html:not(.light) .moon-icon {
+  display: none !important;
+}
+
+/* Brand Logo Toggle */
+html.light .light-logo {
+  display: block !important;
+}
+html.light .dark-logo {
+  display: none !important;
+}
+html:not(.light) .light-logo {
+  display: none !important;
+}
+html:not(.light) .dark-logo {
+  display: block !important;
+}
+

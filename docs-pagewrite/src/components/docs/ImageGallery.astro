@@ -1,0 +1,40 @@
+---
+interface ImageItem {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  columns?: number;
+  images: ImageItem[];
+}
+
+const { columns = 2, images = [] } = Astro.props;
+
+let gridColsClass = 'grid-cols-1 md:grid-cols-2';
+if (columns === 3) {
+  gridColsClass = 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+} else if (columns === 4) {
+  gridColsClass = 'grid-cols-2 md:grid-cols-4';
+}
+---
+<div class={`grid gap-4 my-6 ${gridColsClass}`}>
+  {images.map((img) => (
+    <div class="group relative flex flex-col border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950/40 hover:border-zinc-700 transition-all duration-300">
+      <div class="overflow-hidden aspect-video bg-zinc-900 flex items-center justify-center">
+        <img
+          src={img.src}
+          alt={img.alt}
+          loading="lazy"
+          class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 ease-out"
+        />
+      </div>
+      {img.caption && (
+        <div class="px-3 py-2 border-t border-zinc-900 bg-zinc-950/60 backdrop-blur-sm text-xs text-zinc-400 font-sans italic text-center">
+          {img.caption}
+        </div>
+      )}
+    </div>
+  ))}
+</div>

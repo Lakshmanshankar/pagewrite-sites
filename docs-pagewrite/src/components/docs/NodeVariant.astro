@@ -1,0 +1,61 @@
+---
+interface Props {
+  variant: 'note' | 'tip' | 'warning' | 'danger';
+  title?: string;
+}
+
+const { variant = 'note', title } = Astro.props;
+
+// Determine colors and styles
+let borderClass = 'border-zinc-800';
+let bgClass = 'bg-zinc-950/30';
+let textClass = 'text-zinc-300';
+let titleClass = 'text-zinc-100';
+let iconColor = 'text-zinc-400';
+
+if (variant === 'tip') {
+  borderClass = 'border-primary-800/40';
+  bgClass = 'bg-primary-950/10';
+  textClass = 'text-primary-200/90';
+  titleClass = 'text-primary-200 font-semibold';
+  iconColor = 'text-primary-400';
+} else if (variant === 'warning') {
+  borderClass = 'border-amber-800/40';
+  bgClass = 'bg-amber-950/10';
+  textClass = 'text-amber-200/90';
+  titleClass = 'text-amber-300 font-semibold';
+  iconColor = 'text-amber-400';
+} else if (variant === 'danger') {
+  borderClass = 'border-red-900/40';
+  bgClass = 'bg-red-950/10';
+  textClass = 'text-red-200/90';
+  titleClass = 'text-red-400 font-semibold';
+  iconColor = 'text-red-500';
+}
+---
+<div class={`flex gap-3.5 p-4 border rounded-xl my-6 backdrop-blur-sm ${borderClass} ${bgClass}`}>
+  <div class={`shrink-0 mt-0.5 ${iconColor}`}>
+    {variant === 'note' && (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    )}
+    {variant === 'tip' && (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+    )}
+    {variant === 'warning' && (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    )}
+    {variant === 'danger' && (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8.5 21 7.5-7.5h-5L15.5 3H8l-4 9.5h5L8.5 21Z"/></svg>
+    )}
+  </div>
+  <div class="flex-1 min-w-0 font-sans text-sm leading-relaxed">
+    {title && (
+      <div class={`mb-1 ${titleClass}`}>
+        {title}
+      </div>
+    )}
+    <div class={`prose-content ${textClass}`}>
+      <slot />
+    </div>
+  </div>
+</div>

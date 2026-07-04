@@ -1,0 +1,30 @@
+---
+import type { SidebarItem } from "../lib/docs";
+
+interface Props {
+  items: SidebarItem[];
+  nested?: boolean;
+}
+
+const { items, nested = false } = Astro.props;
+---
+
+<div class="sidebar-nav" role={nested ? undefined : "tree"} aria-label={nested ? undefined : "Primary"}>
+  {items.map((item) =>
+    item.type === "group" ? (
+      <details class="sidebar-group" open={item.active}>
+        <summary class="sidebar-group-summary">{item.label}</summary>
+        <div class="sidebar-group-items">
+          <Astro.self items={item.items} nested />
+        </div>
+      </details>
+    ) : (
+      <a href={item.href} class:list={["sidebar-link", { active: item.active }]}>
+        <span class="sidebar-link-row">
+          <span class="sidebar-link-title">{item.label}</span>
+        </span>
+        {item.description && <span class="sidebar-link-copy">{item.description}</span>}
+      </a>
+    ),
+  )}
+</div>

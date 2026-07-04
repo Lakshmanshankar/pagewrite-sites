@@ -1,0 +1,39 @@
+---
+interface PageLink {
+  title: string;
+  url: string;
+}
+
+interface Props {
+  prev?: PageLink;
+  next?: PageLink;
+}
+
+const { prev, next } = Astro.props;
+---
+
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-12 pt-8 border-t border-border-line">
+  {prev ? (
+    <a 
+      href={prev.url} 
+      class="flex-1 group flex flex-col space-y-1 p-4 border border-border-line rounded-lg bg-bg-card hover:border-primary-500 hover:bg-bg-page hover-lift transition-interactive text-left"
+    >
+      <span class="text-xs font-medium text-text-muted uppercase tracking-wider group-hover:text-primary-500 transition-colors">Previous</span>
+      <span class="text-base font-semibold text-text-title group-hover:text-primary-500 transition-colors line-clamp-1">{prev.title}</span>
+    </a>
+  ) : (
+    <div class="flex-1"></div>
+  )}
+
+  {next ? (
+    <a 
+      href={next.url} 
+      class="flex-1 group flex flex-col space-y-1 p-4 border border-border-line rounded-lg bg-bg-card hover:border-primary-500 hover:bg-bg-page hover-lift transition-interactive text-right"
+    >
+      <span class="text-xs font-medium text-text-muted uppercase tracking-wider group-hover:text-primary-500 transition-colors">Next</span>
+      <span class="text-base font-semibold text-text-title group-hover:text-primary-500 transition-colors line-clamp-1">{next.title}</span>
+    </a>
+  ) : (
+    <div class="flex-1"></div>
+  )}
+</div>

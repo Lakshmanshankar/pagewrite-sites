@@ -1,0 +1,215 @@
+---
+---
+{/* Search Trigger Button */}
+<button
+  id="search-trigger"
+  class="flex items-center space-x-2 w-full max-w-[240px] px-3 py-1.5 border border-border-line/40 hover:border-border-line bg-bg-card hover:bg-bg-card/85 rounded-lg text-text-muted hover:text-text-main transition-all text-sm cursor-pointer shadow-xs"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  <span class="flex-1 text-left">Search docs...</span>
+  <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 border border-border-line/35 bg-bg-page rounded font-mono text-[10px] text-text-muted">
+    ⌘K
+  </kbd>
+</button>
+
+{/* Accessible Search Dialog */}
+<dialog
+  id="search-dialog"
+  class="backdrop:bg-black/75 backdrop:backdrop-blur-xs border border-border-line/45 rounded-xl bg-bg-sidebar text-text-muted p-0 w-full max-w-xl shadow-2xl overflow-hidden focus:outline-none"
+>
+  <div class="flex items-center border-b border-border-line/40 px-4 py-3.5 bg-bg-card">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-text-muted shrink-0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input
+      type="search"
+      id="search-input"
+      placeholder="Search documentation..."
+      class="flex-1 bg-transparent border-0 outline-none focus:ring-0 text-sm pl-3 pr-2 text-text-title placeholder-text-muted/65 focus:outline-none"
+      autocomplete="off"
+    />
+    <button
+      id="search-close"
+      class="text-text-muted hover:text-text-title text-xs px-2 py-1 border border-border-line/40 bg-bg-card rounded-md cursor-pointer transition-colors"
+    >
+      ESC
+    </button>
+  </div>
+  
+  <div id="search-results" class="max-h-[360px] overflow-y-auto p-2 divide-y divide-border-line/35 empty:p-0">
+    <div class="p-6 text-center text-sm text-text-muted font-sans">
+      Start typing to search...
+    </div>
+  </div>
+  
+  <div class="flex items-center justify-between border-t border-border-line/35 px-4 py-2.5 bg-bg-card/45 text-[10px] text-text-muted font-sans">
+    <div class="flex space-x-3">
+      <span><kbd class="px-1.5 py-0.5 border border-border-line/35 rounded bg-bg-page">↑↓</kbd> Navigate</span>
+      <span><kbd class="px-1.5 py-0.5 border border-border-line/35 rounded bg-bg-page">Enter</kbd> Select</span>
+    </div>
+    <span>CMS sync powered by Pagewrite</span>
+  </div>
+</dialog>
+
+<style>
+  #search-dialog {
+    position: fixed;
+    top: 15vh;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin: 0;
+  }
+  
+  /* Prevent scroll when dialog is open */
+  :global(body:has(dialog[open])) {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  let searchIndex: any = null;
+  let fuse: any = null;
+  const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
+  const trigger = document.getElementById('search-trigger');
+  const closeBtn = document.getElementById('search-close');
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const resultsContainer = document.getElementById('search-results');
+
+  async function loadSearchIndex() {
+    if (searchIndex) return;
+    try {
+      const res = await fetch('/search-index.json');
+      searchIndex = await res.json();
+      fuse = new Fuse(searchIndex, {
+        keys: ['title', 'description', 'section', 'content'],
+        threshold: 0.3,
+        ignoreLocation: true
+      });
+    } catch (err) {
+      console.error('Failed to load search index:', err);
+    }
+  }
+
+  function openSearch() {
+    if (!dialog) return;
+    dialog.showModal();
+    loadSearchIndex();
+    setTimeout(() => searchInput?.focus(), 50);
+  }
+
+  function closeSearch() {
+    if (!dialog) return;
+    dialog.close();
+    if (searchInput) searchInput.value = '';
+    if (resultsContainer) {
+      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Start typing to search...</div>`;
+    }
+  }
+
+  trigger?.addEventListener('click', openSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+
+  // Shortcut key
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      if (dialog) {
+        dialog.open ? closeSearch() : openSearch();
+      }
+    }
+  });
+
+  // Close when clicking backdrop
+  dialog?.addEventListener('click', (e) => {
+    if (!dialog) return;
+    const dialogDimensions = dialog.getBoundingClientRect();
+    if (
+      e.clientX < dialogDimensions.left ||
+      e.clientX > dialogDimensions.right ||
+      e.clientY < dialogDimensions.top ||
+      e.clientY > dialogDimensions.bottom
+    ) {
+      closeSearch();
+    }
+  });
+
+  // Handle Search Input
+  searchInput?.addEventListener('input', (e: any) => {
+    const query = e.target.value.toLowerCase().trim();
+    if (!resultsContainer) return;
+    
+    if (!query) {
+      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Start typing to search...</div>`;
+      return;
+    }
+
+    if (!fuse) {
+      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Loading search data...</div>`;
+      return;
+    }
+
+    const matches = fuse.search(query).map((res: any) => res.item);
+
+    if (matches.length === 0) {
+      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">No matching documentation pages found.</div>`;
+      return;
+    }
+
+    resultsContainer.innerHTML = matches.slice(0, 15).map((item: any, idx: number) => `
+      <a
+        href="/docs/${item.slug}"
+        class="search-item flex flex-col p-3 rounded-lg hover:bg-bg-card transition-colors group cursor-pointer focus:outline-none focus:bg-bg-card ${idx === 0 ? 'bg-bg-card border-l-2 border-primary-500 pl-2.5' : ''}"
+        data-index="${idx}"
+      >
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-primary-400 font-mono tracking-wider uppercase">${item.section}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-text-muted/60 group-hover:text-text-title transition-colors"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+        <span class="text-sm font-semibold text-text-title transition-colors mt-0.5">${item.title}</span>
+        ${item.description ? `<span class="text-xs text-text-muted transition-colors mt-0.5 line-clamp-1">${item.description}</span>` : ''}
+      </a>
+    `).join('');
+
+    setupKeyboardNavigation();
+  });
+
+  function setupKeyboardNavigation() {
+    if (!resultsContainer) return;
+    const items = resultsContainer.querySelectorAll('.search-item');
+    if (items.length === 0) return;
+    
+    let activeIdx = 0;
+    
+    function setActive(idx: number) {
+      items.forEach((item: any, i) => {
+        if (i === idx) {
+          item.classList.add('bg-bg-card', 'border-l-2', 'border-primary-500', 'pl-2.5');
+          item.scrollIntoView({ block: 'nearest' });
+          activeIdx = i;
+        } else {
+          item.classList.remove('bg-bg-card', 'border-l-2', 'border-primary-500', 'pl-2.5');
+        }
+      });
+    }
+
+    if (searchInput) {
+      searchInput.onkeydown = (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const next = (activeIdx + 1) % items.length;
+          setActive(next);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prev = (activeIdx - 1 + items.length) % items.length;
+          setActive(prev);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const activeItem = items[activeIdx] as HTMLAnchorElement;
+          if (activeItem) {
+            activeItem.click();
+          }
+        }
+      };
+    }
+  }
+</script>

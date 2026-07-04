@@ -1,0 +1,33 @@
+---
+import { SITE, FOOTER } from '../../config';
+import lightLogo from '../../assets/pagewrite.svg';
+import darkLogo from '../../assets/pagewrite-dark.svg';
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-border-line mt-20 py-8 md:py-12">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex flex-col space-y-3 text-center md:text-left items-center md:items-start">
+      <a href="/" class="block">
+        <img src={lightLogo.src} alt={SITE.title} class="h-7 w-auto light-logo" />
+        <img src={darkLogo.src} alt={SITE.title} class="h-7 w-auto dark-logo" />
+      </a>
+      <p class="text-sm text-text-muted">{FOOTER.description}</p>
+    </div>
+    
+    <div class="flex items-center space-x-6 text-sm font-medium text-text-muted">
+      {FOOTER.links.map(link => (
+        <a href={link.href} class="hover:text-text-title transition-interactive">{link.label}</a>
+      ))}
+    </div>
+  </div>
+  
+  <div class="mt-8 pt-8 border-t border-border-line/50 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
+    <p>&copy; {currentYear} {FOOTER.copyright}</p>
+    <div class="flex space-x-4">
+      {FOOTER.legal.map(link => (
+        <a href={link.href} class="hover:text-text-title transition-interactive">{link.label}</a>
+      ))}
+    </div>
+  </div>
+</footer>

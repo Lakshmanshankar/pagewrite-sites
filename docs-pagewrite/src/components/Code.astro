@@ -1,0 +1,91 @@
+---
+import { Code as AstroCode } from "astro:components";
+
+interface Props {
+  lang?: string;
+  value: string;
+  class?: string;
+  filename?: string;
+}
+
+const { lang = "plaintext", value, class: className = "", filename } = Astro.props;
+const codeLang = lang as any;
+---
+
+<div class={`docs-code relative group/code flex flex-col ${className}`.trim()}>
+  {filename && (
+    <div class="px-4 py-2 border-b border-code-border bg-code-bg text-xs font-mono text-text-muted rounded-t-lg">
+      {filename}
+    </div>
+  )}
+  <div class="relative">
+  <button
+    class="copy-btn absolute top-3 right-3 z-10 p-1.5 rounded-md border border-border-line bg-bg-page/80 backdrop-blur-xs text-text-muted hover:text-text-title opacity-0 group-hover/code:opacity-100 transition-opacity duration-200 focus:opacity-100 cursor-pointer"
+    aria-label="Copy code"
+    data-code={value}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden text-primary-500"><path d="M20 6 9 17l-5-5"/></svg>
+  </button>
+  <AstroCode
+    code={value}
+    lang={codeLang}
+    themes={{ light: "github-light", dark: "github-dark-high-contrast" }}
+    defaultColor={false}
+  />
+  </div>
+</div>
+
+<script>
+  function setupCopyButtons() {
+    const buttons = document.querySelectorAll('.copy-btn');
+    buttons.forEach(button => {
+      if (button.getAttribute('data-listener-added') === 'true') return;
+      button.setAttribute('data-listener-added', 'true');
+      
+      button.addEventListener('click', async () => {
+        const code = button.getAttribute('data-code') || '';
+        try {
+          await navigator.clipboard.writeText(code);
+          const copyIcon = button.querySelector('.copy-icon');
+          const checkIcon = button.querySelector('.check-icon');
+          
+          copyIcon?.classList.add('hidden');
+          checkIcon?.classList.remove('hidden');
+          
+          setTimeout(() => {
+            copyIcon?.classList.remove('hidden');
+            checkIcon?.classList.add('hidden');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy text: ', err);
+        }
+      });
+    });
+  }
+
+  // Run on initial load
+  setupCopyButtons();
+  // Run on page transitions (if any)
+  document.addEventListener('astro:page-load', setupCopyButtons);
+</script>
+
+<style>
+  .docs-code {
+    margin: 1.5rem 0;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  .docs-code :global(pre) {
+    margin: 0 !important;
+    padding: 1rem 1.25rem !important;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .docs-code :global(code) {
+    font-family: var(--font-mono);
+  }
+</style>
