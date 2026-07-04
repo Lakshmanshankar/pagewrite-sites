@@ -1,46 +1,45 @@
-# Astro Starter Kit: Basics
+# docs-pagewrite
 
-```sh
-npm create astro@latest -- --template basics
+This is an Astro-based documentation project configured to deploy to Cloudflare Pages.
+
+## Getting Started
+
+First, install the dependencies:
+
+```bash
+pnpm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+To run the local development server:
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```bash
+pnpm run dev
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🛠️ Build
 
-## 🧞 Commands
+To build the static site for production, run:
 
-All commands are run from the root of the project, from a terminal:
+```bash
+pnpm run build
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+This will generate the static assets inside the `dist/` directory.
 
-## 👀 Want to learn more?
+## ☁️ Deploy to Cloudflare Pages
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+To deploy and publish the project to Cloudflare Pages, make sure you have the [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/) installed and are logged in.
+
+Run the following command to deploy the generated `dist/` folder:
+
+```bash
+pnpm exec wrangler pages deploy ./dist --project-name=docs-pagewrite
+```
+
+### First-time Setup (Create Project)
+
+If this is your first time deploying and you haven't created the Cloudflare Pages project yet, run the following command to initialize it:
+
+```bash
+pnpm exec wrangler pages project create docs-pagewrite --production-branch main
+```
