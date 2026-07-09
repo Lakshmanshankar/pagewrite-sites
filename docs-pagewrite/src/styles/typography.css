@@ -150,11 +150,14 @@ html.light .prose pre span {
   padding-left: 17px;
   border-left: 3px solid var(--color-text-title);
   color: var(--color-text-title);
-  font-style: italic;
+  /* font-style: italic; */
 }
 
 .prose table {
   width: 100%;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
   border-collapse: collapse;
   margin: var(--space-6) 0;
   font-size: var(--text-sm);

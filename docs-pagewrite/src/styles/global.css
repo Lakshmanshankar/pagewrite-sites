@@ -3,14 +3,6 @@
 @import "./typography.css";
 @import "./animations.css";
 
-/* @font-face { */
-/*   font-family: 'Bamini'; */
-/*   src: url('../assets/Bamini_Tamil_56.ttf') format('truetype'); */
-/*   font-weight: normal; */
-/*   font-style: normal; */
-/*   font-display: swap; */
-/* } */
-
 @theme {
   /* Primary Theme Color Palette (Neutral Accent) */
   --color-primary-400: var(--primary-400);

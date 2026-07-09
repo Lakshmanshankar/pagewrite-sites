@@ -74,11 +74,13 @@ docs.forEach((doc) => {
 </aside>
 
 <script>
-  // Theme Toggle Logic for sidebar
-  const themeToggleSidebar = document.getElementById('theme-toggle-sidebar');
-  themeToggleSidebar?.addEventListener('click', () => {
-    const isLight = document.documentElement.classList.toggle('light');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  // Theme Toggle Logic for sidebar using event delegation to survive View Transitions
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('#theme-toggle-sidebar')) {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
   });
 </script>
 

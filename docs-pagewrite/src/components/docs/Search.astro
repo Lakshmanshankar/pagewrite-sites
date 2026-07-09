@@ -62,118 +62,125 @@
   :global(body:has(dialog[open])) {
     overflow: hidden;
   }
+
+  :global(#search-results mark) {
+    background-color: color-mix(in srgb, var(--primary-500) 25%, transparent);
+    color: var(--primary-400);
+    border-radius: 0.125rem;
+    padding: 0 0.125rem;
+  }
 </style>
 
 <script>
-  import Fuse from 'fuse.js';
+  let pagefind: any = null;
 
-  let searchIndex: any = null;
-  let fuse: any = null;
-  const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
-  const trigger = document.getElementById('search-trigger');
-  const closeBtn = document.getElementById('search-close');
-  const searchInput = document.getElementById('search-input') as HTMLInputElement;
-  const resultsContainer = document.getElementById('search-results');
+  function initSearch() {
+    const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
+    const trigger = document.getElementById('search-trigger');
+    const closeBtn = document.getElementById('search-close');
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const resultsContainer = document.getElementById('search-results');
 
-  async function loadSearchIndex() {
-    if (searchIndex) return;
-    try {
-      const res = await fetch('/search-index.json');
-      searchIndex = await res.json();
-      fuse = new Fuse(searchIndex, {
-        keys: ['title', 'description', 'section', 'content'],
-        threshold: 0.3,
-        ignoreLocation: true
-      });
-    } catch (err) {
-      console.error('Failed to load search index:', err);
-    }
-  }
+    if (!dialog || !trigger) return;
 
-  function openSearch() {
-    if (!dialog) return;
-    dialog.showModal();
-    loadSearchIndex();
-    setTimeout(() => searchInput?.focus(), 50);
-  }
-
-  function closeSearch() {
-    if (!dialog) return;
-    dialog.close();
-    if (searchInput) searchInput.value = '';
-    if (resultsContainer) {
-      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Start typing to search...</div>`;
-    }
-  }
-
-  trigger?.addEventListener('click', openSearch);
-  closeBtn?.addEventListener('click', closeSearch);
-
-  // Shortcut key
-  window.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      if (dialog) {
-        dialog.open ? closeSearch() : openSearch();
+    async function loadSearchIndex() {
+      if (pagefind) return;
+      try {
+        const url = '/pagefind/pagefind.js';
+        // @ts-ignore
+        pagefind = await import(/* @vite-ignore */ url);
+        await pagefind.init();
+      } catch (err) {
+        console.error('Failed to load search index (Pagefind might not be built yet):', err);
       }
     }
-  });
 
-  // Close when clicking backdrop
-  dialog?.addEventListener('click', (e) => {
-    if (!dialog) return;
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      e.clientX < dialogDimensions.left ||
-      e.clientX > dialogDimensions.right ||
-      e.clientY < dialogDimensions.top ||
-      e.clientY > dialogDimensions.bottom
-    ) {
-      closeSearch();
-    }
-  });
-
-  // Handle Search Input
-  searchInput?.addEventListener('input', (e: any) => {
-    const query = e.target.value.toLowerCase().trim();
-    if (!resultsContainer) return;
-    
-    if (!query) {
-      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Start typing to search...</div>`;
-      return;
+    function openSearch() {
+      if (!dialog) return;
+      dialog.showModal();
+      loadSearchIndex();
+      setTimeout(() => searchInput?.focus(), 50);
     }
 
-    if (!fuse) {
-      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Loading search data...</div>`;
-      return;
+    function closeSearch() {
+      if (!dialog) return;
+      dialog.close();
+      if (searchInput) searchInput.value = '';
+      if (resultsContainer) {
+        resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Start typing to search...</div>`;
+      }
     }
 
-    const matches = fuse.search(query).map((res: any) => res.item);
+    trigger.addEventListener('click', openSearch);
+    closeBtn?.addEventListener('click', closeSearch);
 
-    if (matches.length === 0) {
-      resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">No matching documentation pages found.</div>`;
-      return;
-    }
+    // Close when clicking backdrop
+    dialog.addEventListener('click', (e) => {
+      const dialogDimensions = dialog.getBoundingClientRect();
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        closeSearch();
+      }
+    });
 
-    resultsContainer.innerHTML = matches.slice(0, 15).map((item: any, idx: number) => `
-      <a
-        href="/docs/${item.slug}"
-        class="search-item flex flex-col p-3 rounded-lg hover:bg-bg-card transition-colors group cursor-pointer focus:outline-none focus:bg-bg-card ${idx === 0 ? 'bg-bg-card border-l-2 border-primary-500 pl-2.5' : ''}"
-        data-index="${idx}"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-primary-400 font-mono tracking-wider uppercase">${item.section}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-text-muted/60 group-hover:text-text-title transition-colors"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </div>
-        <span class="text-sm font-semibold text-text-title transition-colors mt-0.5">${item.title}</span>
-        ${item.description ? `<span class="text-xs text-text-muted transition-colors mt-0.5 line-clamp-1">${item.description}</span>` : ''}
-      </a>
-    `).join('');
+    // Handle Search Input
+    let currentSearchStr = '';
+    searchInput?.addEventListener('input', async (e: any) => {
+      const query = e.target.value.toLowerCase().trim();
+      currentSearchStr = query;
+      if (!resultsContainer) return;
+      
+      if (!query) {
+        resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Start typing to search...</div>`;
+        return;
+      }
 
-    setupKeyboardNavigation();
-  });
+      if (!pagefind) {
+        resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">Search index not available (run a build first).</div>`;
+        return;
+      }
 
-  function setupKeyboardNavigation() {
+      const search = await pagefind.search(query);
+      if (currentSearchStr !== query) return;
+
+      if (search.results.length === 0) {
+        resultsContainer.innerHTML = `<div class="p-6 text-center text-sm text-zinc-500 font-sans">No matching documentation pages found.</div>`;
+        return;
+      }
+
+      const results = await Promise.all(search.results.slice(0, 15).map((r: any) => r.data()));
+      if (currentSearchStr !== query) return;
+
+      resultsContainer.innerHTML = results.map((item: any, idx: number) => {
+        const title = item.meta.title || 'Documentation Page';
+        const section = 'Doc';
+        const snippet = item.excerpt || '';
+
+        return `
+        <a
+          href="${item.url}"
+          class="search-item flex flex-col p-3 rounded-lg hover:bg-bg-card transition-colors group cursor-pointer focus:outline-none focus:bg-bg-card ${idx === 0 ? 'bg-bg-card border-l-2 border-primary-500 pl-2.5' : ''}"
+          data-index="${idx}"
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-primary-400 font-mono tracking-wider uppercase">${section}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-text-muted/60 group-hover:text-text-title transition-colors"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+          <span class="text-sm font-semibold text-text-title transition-colors mt-0.5">${title}</span>
+          ${snippet ? `<span class="text-xs text-text-muted transition-colors mt-1 line-clamp-2">${snippet}</span>` : ''}
+        </a>
+        `;
+      }).join('');
+
+      setupKeyboardNavigation(resultsContainer, searchInput);
+    });
+  }
+
+  function setupKeyboardNavigation(resultsContainer: HTMLElement, searchInput: HTMLInputElement) {
     if (!resultsContainer) return;
     const items = resultsContainer.querySelectorAll('.search-item');
     if (items.length === 0) return;
@@ -192,24 +199,48 @@
       });
     }
 
-    if (searchInput) {
-      searchInput.onkeydown = (e) => {
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          const next = (activeIdx + 1) % items.length;
-          setActive(next);
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          const prev = (activeIdx - 1 + items.length) % items.length;
-          setActive(prev);
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          const activeItem = items[activeIdx] as HTMLAnchorElement;
-          if (activeItem) {
-            activeItem.click();
+    searchInput.onkeydown = (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = (activeIdx + 1) % items.length;
+        setActive(next);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prev = (activeIdx - 1 + items.length) % items.length;
+        setActive(prev);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const activeItem = items[activeIdx] as HTMLAnchorElement;
+        if (activeItem) {
+          activeItem.click();
+        }
+      }
+    };
+  }
+
+  // Handle global shortcut key exactly once
+  // @ts-ignore
+  if (!window.searchShortcutInitialized) {
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const trigger = document.getElementById('search-trigger');
+        const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
+        const closeBtn = document.getElementById('search-close');
+        
+        if (dialog) {
+          if (dialog.open) {
+            closeBtn?.click();
+          } else {
+            trigger?.click();
           }
         }
-      };
-    }
+      }
+    });
+    // @ts-ignore
+    window.searchShortcutInitialized = true;
   }
+
+  // Initialize on load
+  initSearch();
 </script>

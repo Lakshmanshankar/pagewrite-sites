@@ -37,37 +37,42 @@ const filteredHeadings = headings.filter((h) => h.depth == 1 || h.depth === 2 ||
 </nav>
 
 <script>
-  // Dynamic Scroll Spy using IntersectionObserver
-  const tocLinks = document.querySelectorAll('.toc-link');
-  const headings = Array.from(document.querySelectorAll('article h2, article h3'));
+  function initTOC() {
+    // Dynamic Scroll Spy using IntersectionObserver
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const headings = Array.from(document.querySelectorAll('article h2, article h3'));
 
-  if (tocLinks.length > 0 && headings.length > 0) {
-    const observerOptions = {
-      root: null, // viewport
-      rootMargin: '-80px 0px -60% 0px', // check headings in top/middle section
-      threshold: 0.1
-    };
+    if (tocLinks.length > 0 && headings.length > 0) {
+      const observerOptions = {
+        root: null, // viewport
+        rootMargin: '-80px 0px -60% 0px', // check headings in top/middle section
+        threshold: 0.1
+      };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          if (!id) return;
-          
-          tocLinks.forEach((link) => {
-            const slug = link.getAttribute('data-slug');
-            if (slug === id) {
-              link.classList.add('text-primary-400', 'border-primary-500', 'font-medium');
-              link.classList.remove('text-text-muted', 'border-transparent');
-            } else {
-              link.classList.remove('text-primary-400', 'border-primary-500', 'font-medium');
-              link.classList.add('text-text-muted', 'border-transparent');
-            }
-          });
-        }
-      });
-    }, observerOptions);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            if (!id) return;
+            
+            tocLinks.forEach((link) => {
+              const slug = link.getAttribute('data-slug');
+              if (slug === id) {
+                link.classList.add('text-primary-400', 'border-primary-500', 'font-medium');
+                link.classList.remove('text-text-muted', 'border-transparent');
+              } else {
+                link.classList.remove('text-primary-400', 'border-primary-500', 'font-medium');
+                link.classList.add('text-text-muted', 'border-transparent');
+              }
+            });
+          }
+        });
+      }, observerOptions);
 
-    headings.forEach((heading) => observer.observe(heading));
+      headings.forEach((heading) => observer.observe(heading));
+    }
   }
+
+  // Initialize on load
+  initTOC();
 </script>

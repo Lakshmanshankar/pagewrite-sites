@@ -64,10 +64,8 @@ const codeLang = lang as any;
     });
   }
 
-  // Run on initial load
+  // Run on load
   setupCopyButtons();
-  // Run on page transitions (if any)
-  document.addEventListener('astro:page-load', setupCopyButtons);
 </script>
 
 <style>

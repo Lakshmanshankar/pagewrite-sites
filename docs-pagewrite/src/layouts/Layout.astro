@@ -3,10 +3,9 @@ import Header from '../components/docs/Header.astro';
 import Sidebar from '../components/docs/Sidebar.astro';
 import TableOfContents from '../components/docs/TableOfContents.astro';
 import Footer from '../components/layout/Footer.astro';
-import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import PageActions from '../components/ui/PageActions.astro';
+import Pagination from '../components/ui/Pagination.astro';
 import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 
 interface Heading {
   depth: number;
@@ -14,9 +13,10 @@ interface Heading {
   text: string;
 }
 
-interface BreadcrumbSegment {
-  name: string;
-  url?: string;
+interface PageLink {
+  title: string;
+  url: string;
+  description?: string;
 }
 
 interface Props {
@@ -25,8 +25,9 @@ interface Props {
   isDocsPage?: boolean;
   activeSlug?: string;
   headings?: Heading[];
-  breadcrumbs?: BreadcrumbSegment[];
   activeTab?: 'docs' | 'showcase' | 'api' | 'home';
+  prev?: PageLink;
+  next?: PageLink;
 }
 
 const {
@@ -35,8 +36,9 @@ const {
   isDocsPage = false,
   activeSlug,
   headings = [],
-  breadcrumbs = [],
-  activeTab = 'home'
+  activeTab = 'home',
+  prev,
+  next
 } = Astro.props;
 ---
 
@@ -49,7 +51,6 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title} | Pagewrite Docs</title>
     <meta name="description" content={description} />
-    <ClientRouter />
     
     {/* Load Google Fonts */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -83,22 +84,18 @@ const {
               <div class="flex-1 w-full max-w-6xl py-8 flex flex-col lg:flex-row mx-auto gap-10 xl:gap-16 justify-between">
                 <main class="flex-1 w-full min-w-0 flex flex-col justify-between">
                   <div class="w-full max-w-3xl">
-                    {breadcrumbs.length > 0 && (
-                      <div class="mb-6">
-                        <Breadcrumbs segments={breadcrumbs} />
+                    <div class="mb-8 pb-6 border-b border-border-line/60 flex items-start justify-between gap-4">
+                      <div class="w-[80%]">
+                        <h1 class="text-3xl sm:text-4xl font-bold font-heading text-text-title tracking-tight mb-3 capitalize">
+                          {title === 'index' ? 'Overview' : title.replace(/-/g, ' ')}
+                        </h1>
+                        {description && description !== "Pagewrite visual documentation CMS theme for Astro" && (
+                          <p class="text-lg text-text-muted mb-6 leading-relaxed">
+                            {description}
+                          </p>
+                        )}
                       </div>
-                    )}
-                    
-                    <div class="mb-8 pb-6 border-b border-border-line/60">
-                      <h1 class="text-3xl sm:text-4xl font-bold font-heading text-text-title tracking-tight mb-3 capitalize">
-                        {title === 'index' ? 'Overview' : title.replace(/-/g, ' ')}
-                      </h1>
-                      {description && description !== "Pagewrite visual documentation CMS theme for Astro" && (
-                        <p class="text-lg text-text-muted mb-6 leading-relaxed">
-                          {description}
-                        </p>
-                      )}
-                      <div class="flex items-center">
+                      <div class="w-[20%] flex justify-end">
                         <PageActions />
                       </div>
                     </div>
@@ -106,6 +103,10 @@ const {
                     <article class="prose max-w-none w-full animate-fade-in mt-2">
                       <slot />
                     </article>
+                    
+                    {isDocsPage && (prev || next) && (
+                      <Pagination prev={prev} next={next} />
+                    )}
                   </div>
                   <Footer />
                 </main>

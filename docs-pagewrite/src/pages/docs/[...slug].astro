@@ -1,11 +1,24 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import CodeTabs from '../../components/docs/CodeTabs.astro';
-import Embed from '../../components/docs/Embed.astro';
-import ImageGallery from '../../components/docs/ImageGallery.astro';
 import NodeVariant from '../../components/docs/NodeVariant.astro';
 import Card from '../../components/docs/Card.astro';
+import pagemap from '../../content/docs/pagemap.json';
+
+// Flatten the pagemap
+function flattenPages(nodes: any[]): any[] {
+  let flat: any[] = [];
+  for (const node of nodes) {
+    if (node.children && node.children.length > 0) {
+      flat = flat.concat(flattenPages(node.children));
+    } else if (node.slug) {
+      flat.push(node);
+    }
+  }
+  return flat;
+}
+
+const flatPagemap = flattenPages(pagemap);
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
@@ -26,6 +39,35 @@ export async function getStaticPaths() {
 
 const { doc } = Astro.props;
 const { Content, headings } = await render(doc);
+
+const currentSlug = doc.id === 'index' ? '' : (doc.id.endsWith('/index') ? doc.id.slice(0, -6) : doc.id);
+const currentIndex = flatPagemap.findIndex((p: any) => p.slug === currentSlug);
+
+let prev = undefined;
+let next = undefined;
+
+const allDocs = await getCollection('docs');
+function getDocDescription(slug: string) {
+  const targetDoc = allDocs.find((d: any) => d.id === slug || d.id === `${slug}/index` || d.id === `${slug}.mdx`);
+  return targetDoc?.data?.description;
+}
+
+if (currentIndex > 0) {
+  const prevSlug = flatPagemap[currentIndex - 1].slug;
+  prev = {
+    title: flatPagemap[currentIndex - 1].title,
+    url: `/docs/${prevSlug}`,
+    description: getDocDescription(prevSlug)
+  };
+}
+if (currentIndex !== -1 && currentIndex < flatPagemap.length - 1) {
+  const nextSlug = flatPagemap[currentIndex + 1].slug;
+  next = {
+    title: flatPagemap[currentIndex + 1].title,
+    url: `/docs/${nextSlug}`,
+    description: getDocDescription(nextSlug)
+  };
+}
 ---
 
 <Layout
@@ -35,6 +77,8 @@ const { Content, headings } = await render(doc);
   activeSlug={doc.id}
   headings={headings}
   activeTab="docs"
+  prev={prev}
+  next={next}
 >
-  <Content components={{ CodeTabs, Embed, ImageGallery, NodeVariant, Card }} />
+  <Content components={{ NodeVariant, Card }} />
 </Layout>
