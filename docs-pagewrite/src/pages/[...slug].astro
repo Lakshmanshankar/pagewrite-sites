@@ -1,9 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import NodeVariant from '../../components/docs/NodeVariant.astro';
-import Card from '../../components/docs/Card.astro';
-import pagemap from '../../content/docs/pagemap.json';
+import Layout from '../layouts/Layout.astro';
+import NodeVariant from '../components/docs/NodeVariant.astro';
+import Card from '../components/docs/Card.astro';
+import pagemap from '../content/docs/pagemap.json';
 
 // Flatten the pagemap
 function flattenPages(nodes: any[]): any[] {
@@ -56,7 +56,7 @@ if (currentIndex > 0) {
   const prevSlug = flatPagemap[currentIndex - 1].slug;
   prev = {
     title: flatPagemap[currentIndex - 1].title,
-    url: `/docs/${prevSlug}`,
+    url: `/${prevSlug}`,
     description: getDocDescription(prevSlug)
   };
 }
@@ -64,7 +64,7 @@ if (currentIndex !== -1 && currentIndex < flatPagemap.length - 1) {
   const nextSlug = flatPagemap[currentIndex + 1].slug;
   next = {
     title: flatPagemap[currentIndex + 1].title,
-    url: `/docs/${nextSlug}`,
+    url: `/${nextSlug}`,
     description: getDocDescription(nextSlug)
   };
 }

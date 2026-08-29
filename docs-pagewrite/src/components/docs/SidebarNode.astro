@@ -76,7 +76,7 @@ function hasActiveDescendant(node: PageNode, currentSlug?: string): boolean {
     const doc = docMap.get(node.id);
     const isSelf = node.slug === activeSlug;
     const title = node.title === 'index' ? 'Overview' : (doc?.data?.title || node.title);
-    const href = node.slug === 'index' ? '/docs' : `/docs/${node.slug.endsWith('/index') ? node.slug.slice(0, -6) : node.slug}`;
+    const href = node.slug === 'index' ? '/' : `/${node.slug.endsWith('/index') ? node.slug.slice(0, -6) : node.slug}`;
     
     return (
       <li class="list-none">

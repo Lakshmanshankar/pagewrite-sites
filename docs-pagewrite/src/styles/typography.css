@@ -72,59 +72,9 @@
   border-bottom-style: solid;
 }
 
-.prose code {
-  font-family: var(--font-mono);
-  font-size: 0.85em;
-  background-color: var(--code-bg);
-  color: var(--color-text-title);
-  padding: 0.2rem 0.4rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--code-border);
-  transition: background-color var(--duration-fast), border-color var(--duration-fast);
-}
 
-.prose pre {
-  margin: var(--space-6) 0;
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  padding: var(--space-4) var(--space-5);
-  background-color: var(--code-bg) !important;
-  border: 1px solid var(--code-border) !important;
-}
-
-/* Shiki class-based theme toggle overrides */
-pre.astro-code,
-.prose pre {
-  background-color: var(--shiki-dark-bg) !important;
-  color: var(--shiki-dark) !important;
-  border: 1px solid var(--code-border) !important;
-}
-pre.astro-code span,
-.prose pre span {
-  color: var(--shiki-dark) !important;
-}
-
-html.light pre.astro-code,
-html.light .prose pre {
-  background-color: var(--shiki-light-bg) !important;
-  color: var(--shiki-light) !important;
-  border: 1px solid var(--code-border) !important;
-}
-html.light pre.astro-code span,
-html.light .prose pre span {
-  color: var(--shiki-light) !important;
-}
-
-.prose pre code {
-  background-color: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  color: inherit !important;
-  font-size: var(--text-sm) !important;
-}
-
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   margin-top: 0;
   margin-bottom: var(--space-5);
   padding-left: var(--space-6);
@@ -165,24 +115,111 @@ html.light .prose pre span {
 }
 
 .prose th {
+  border-top: 1px solid var(--color-border-line);
   border-bottom: 2px solid var(--color-border-card);
-  padding: var(--space-3) var(--space-4);
+  border-left: 1px solid var(--color-border-line);
+  border-right: 1px solid var(--color-border-line);
+  padding: var(--space-2) var(--space-4);
   font-weight: 600;
   color: var(--color-text-title);
+  background-color: var(--color-bg-card);
+  min-width: 150px;
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .prose td {
   border-bottom: 1px solid var(--color-border-line);
-  padding: var(--space-3) var(--space-4);
+  border-left: 1px solid var(--color-border-line);
+  border-right: 1px solid var(--color-border-line);
+  padding: var(--space-2) var(--space-4);
   color: var(--color-text-main);
+  min-width: 150px;
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .prose tr:hover td {
   color: var(--color-text-title);
+  background-color: var(--color-bg-card);
 }
 
 .prose hr {
   border: 0;
   border-top: 1px solid var(--color-border-line);
   margin: var(--space-10) 0;
+}
+
+/* Inline Code */
+.prose code:not(pre code) {
+  font-family: var(--font-mono);
+  background-color: var(--code-bg);
+  border: 1px solid var(--code-border);
+  color: var(--color-text-title);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875em;
+  word-break: break-word;
+}
+
+/* -- ASTRO CODE BLOCKS -- */
+.code-wrapper {
+  position: relative;
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.astro-code {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  border: 1px solid var(--color-border-line);
+  box-shadow: var(--shadow-sm);
+}
+
+.astro-code>code {
+  background: transparent !important;
+  border: none !important;
+}
+
+.astro-code span {
+  font-size: 14px;
+}
+
+/* Copy Button styles */
+.copy-btn {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-line);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard), color var(--duration-fast), background-color var(--duration-fast);
+  z-index: 10;
+}
+
+.code-wrapper:hover .copy-btn {
+  opacity: 1;
+}
+
+.copy-btn:hover {
+  color: var(--color-text-title);
+  background-color: var(--color-border-line);
+}
+
+/* SHIKI STYLES */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }

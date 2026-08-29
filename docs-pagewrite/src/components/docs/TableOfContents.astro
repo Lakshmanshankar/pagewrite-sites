@@ -19,7 +19,7 @@ const filteredHeadings = headings.filter((h) => h.depth == 1 || h.depth === 2 ||
       <h5 class="text-[10px] font-bold text-text-muted uppercase tracking-wider pl-1">
         On this page
       </h5>
-      <ul class="space-y-2.5 text-sm text-text-muted border-l border-border-line" id="toc-list">
+      <ul class="space-y-2.5 text-sm text-text-main border-l border-border-line" id="toc-list">
         {filteredHeadings.map((heading) => (
           <li>
             <a
@@ -59,10 +59,10 @@ const filteredHeadings = headings.filter((h) => h.depth == 1 || h.depth === 2 ||
               const slug = link.getAttribute('data-slug');
               if (slug === id) {
                 link.classList.add('text-primary-400', 'border-primary-500', 'font-medium');
-                link.classList.remove('text-text-muted', 'border-transparent');
+                link.classList.remove('text-text-main', 'border-transparent');
               } else {
                 link.classList.remove('text-primary-400', 'border-primary-500', 'font-medium');
-                link.classList.add('text-text-muted', 'border-transparent');
+                link.classList.add('text-text-main', 'border-transparent');
               }
             });
           }

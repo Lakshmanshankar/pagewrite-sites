@@ -1,16 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-
 import tailwindcss from '@tailwindcss/vite';
-
-import mdx from '@astrojs/mdx';
-import pagewriteAstro from '@lakshmanshankar/pagwrite-astro';
 import AutoImport from 'astro-auto-import';
-import { loadEnv } from 'vite';
+import mdx from '@astrojs/mdx';
 
+import { loadEnv } from 'vite';
+import pagewriteAstro from 'pagewrite-astro';
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
-// const token = env.PAGEWRITE_BUILD_TOKEN || '';
 const docsBuildToken = env.PAGEWRITE_DOCS_BUILD_TOKEN || '';
 
 export default defineConfig({
@@ -27,11 +24,20 @@ export default defineConfig({
     AutoImport({
       imports: [
         "./src/components/Image.astro",
-        "./src/components/Code.astro",
         "./src/components/Spacer.astro",
         "./src/components/Callout.astro",
       ],
     }),
-    mdx()
-  ]
+    mdx(),
+  ],
+
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark-high-contrast",
+      },
+    },
+  },
+
 });

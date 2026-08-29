@@ -79,6 +79,7 @@ docs.forEach((doc) => {
     const target = e.target as HTMLElement;
     if (target.closest('#theme-toggle-sidebar')) {
       const isLight = document.documentElement.classList.toggle('light');
+      document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
     }
   });

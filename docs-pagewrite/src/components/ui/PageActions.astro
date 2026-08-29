@@ -81,7 +81,7 @@
         const data = await res.json();
         
         const currentPath = window.location.pathname.replace(/\/$/, '');
-        const slugMatch = currentPath.match(/\/docs\/(.+)/);
+        const slugMatch = currentPath.match(/^\/(.+)/);
         const slug = slugMatch ? slugMatch[1] : '';
         
         const doc = data.find((d: any) => d.slug === slug || (slug === '' && d.slug === ''));

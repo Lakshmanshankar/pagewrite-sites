@@ -43,7 +43,7 @@ const {
 ---
 
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -63,8 +63,10 @@ const {
         (!('theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)
       ) {
         document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
       } else {
         document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
       }
     </script>
   </head>
@@ -128,5 +130,37 @@ const {
         </div>
       )}
     </div>
+
+    <script>
+      // Add copy buttons to code blocks
+      const codeBlocks = document.querySelectorAll('.astro-code');
+      codeBlocks.forEach((block) => {
+        // Create a wrapper for relative positioning
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-wrapper group';
+        block.parentNode.insertBefore(wrapper, block);
+        wrapper.appendChild(block);
+
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-btn';
+        copyButton.textContent = 'Copy';
+        copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+        
+        copyButton.addEventListener('click', async () => {
+          const code = block.querySelector('code')?.innerText || block.innerText;
+          try {
+            await navigator.clipboard.writeText(code);
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+              copyButton.textContent = 'Copy';
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy text: ', err);
+          }
+        });
+        
+        wrapper.appendChild(copyButton);
+      });
+    </script>
   </body>
 </html>

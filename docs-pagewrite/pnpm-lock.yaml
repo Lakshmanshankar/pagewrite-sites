@@ -10,31 +10,31 @@ importers:
     dependencies:
       '@astrojs/mdx':
         specifier: ^6.0.2
-        version: 6.0.3(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))
-      '@lakshmanshankar/pagwrite-astro':
-        specifier: ^0.1.7
-        version: 0.1.7(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0))
+        version: 6.0.3(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))
       '@lucide/astro':
         specifier: ^1.21.0
-        version: 1.21.0(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))
+        version: 1.21.0(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))
       '@tailwindcss/vite':
         specifier: ^4.3.0
-        version: 4.3.1(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0))
+        version: 4.3.1(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
       astro:
         specifier: ^6.4.4
-        version: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)
+        version: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
       astro-auto-import:
         specifier: ^0.5.1
-        version: 0.5.1(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))
+        version: 0.5.1(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))
       pagefind:
         specifier: ^1.5.2
         version: 1.5.2
+      pagewrite-astro:
+        specifier: ^0.1.10
+        version: 0.1.10(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.1
       vite:
         specifier: ^7.3.2
-        version: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)
+        version: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
       wrangler:
         specifier: ^4.107.0
         version: 4.107.0
@@ -614,14 +614,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
-
-  '@lakshmanshankar/pagwrite-astro@0.1.7':
-    resolution: {integrity: sha512-lYNHmVO72YVrYyyvhBkThBHm5rpAgL7eUvE6RvfWdoRA53nESeDb3yzJ5kf+QobyS+9Qqe9ib9EckoFVBNWCHA==}
-    engines: {node: '>=18.17.0'}
-    hasBin: true
-    peerDependencies:
-      astro: '>=4.0.0 || >=5.0.0'
-      vite: '>=4.0.0 || >=5.0.0 || >=6.0.0'
 
   '@lucide/astro@1.21.0':
     resolution: {integrity: sha512-RSz8xUah+eApcVKuQJXuLzcaYwK++tTLHa34peSln3h8n/RblaohSmsHdOj1JUQT/KutfbXw19u2x5g0zMTT0w==}
@@ -1688,6 +1680,14 @@ packages:
     resolution: {integrity: sha512-XTUaK0hXMCu2jszWE584JGQT7y284TmMV9l/HX3rnG5uo3rHI/uHU56XTyyyPFjeWEBxECbAi0CaFDJOONtG0Q==}
     hasBin: true
 
+  pagewrite-astro@0.1.10:
+    resolution: {integrity: sha512-QY9XZZPW8FHCmPJ1luYvVpmUTesaYPadt/vK3WZq9GeN+3Q/w3L7FNO0NusqSTEMPYwcVw1TNW4jujcFxzAwYg==}
+    engines: {node: '>=18.17.0'}
+    hasBin: true
+    peerDependencies:
+      astro: '>=4.0.0 || >=5.0.0'
+      vite: '>=4.0.0 || >=5.0.0 || >=6.0.0'
+
   parse-entities@4.0.2:
     resolution: {integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==}
 
@@ -2104,6 +2104,11 @@ packages:
   xxhash-wasm@1.1.0:
     resolution: {integrity: sha512-147y/6YNh+tlp6nd/2pWq38i9h6mz/EuQ6njIrmW8D1BS5nCqs0P6DG+m6zTGnNz5I+uhZ0SHxBs9BsPrwcKDA==}
 
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
   yargs-parser@22.0.0:
     resolution: {integrity: sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
@@ -2161,13 +2166,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@6.0.3(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))':
+  '@astrojs/mdx@6.0.3(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))':
     dependencies:
       '@astrojs/internal-helpers': 0.10.0
       '@astrojs/markdown-remark': 7.2.0
       '@mdx-js/mdx': 3.1.1
       acorn: 8.17.0
-      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)
+      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
       es-module-lexer: 2.1.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -2530,14 +2535,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@lakshmanshankar/pagwrite-astro@0.1.7(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0))':
+  '@lucide/astro@1.21.0(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))':
     dependencies:
-      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)
-      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)
-
-  '@lucide/astro@1.21.0(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2))':
-    dependencies:
-      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)
+      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
 
   '@mdx-js/mdx@3.1.1':
     dependencies:
@@ -2792,12 +2792,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.1
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.1
 
-  '@tailwindcss/vite@4.3.1(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0))':
+  '@tailwindcss/vite@4.3.1(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))':
     dependencies:
       '@tailwindcss/node': 4.3.1
       '@tailwindcss/oxide': 4.3.1
       tailwindcss: 4.3.1
-      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)
+      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
 
   '@types/debug@4.1.13':
     dependencies:
@@ -2850,12 +2850,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-auto-import@0.5.1(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)):
+  astro-auto-import@0.5.1(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)):
     dependencies:
       acorn: 8.17.0
-      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)
+      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
 
-  astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2):
+  astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@astrojs/internal-helpers': 0.10.0
@@ -2907,8 +2907,8 @@ snapshots:
       unist-util-visit: 5.1.0
       unstorage: 1.17.5
       vfile: 6.0.3
-      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)
-      vitefu: 1.1.3(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0))
+      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
+      vitefu: 1.1.3(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
       xxhash-wasm: 1.1.0
       yargs-parser: 22.0.0
       zod: 4.4.3
@@ -3983,6 +3983,12 @@ snapshots:
       '@pagefind/windows-arm64': 1.5.2
       '@pagefind/windows-x64': 1.5.2
 
+  pagewrite-astro@0.1.10(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)):
+    dependencies:
+      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
+      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
+      yaml: 2.9.0
+
   parse-entities@4.0.2:
     dependencies:
       '@types/unist': 2.0.11
@@ -4413,7 +4419,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0):
+  vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0):
     dependencies:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
@@ -4425,10 +4431,11 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.7.0
       lightningcss: 1.32.0
+      yaml: 2.9.0
 
-  vitefu@1.1.3(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)):
+  vitefu@1.1.3(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)):
     optionalDependencies:
-      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)
+      vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
 
   web-namespaces@2.0.1: {}
 
@@ -4461,6 +4468,8 @@ snapshots:
   ws@8.21.0: {}
 
   xxhash-wasm@1.1.0: {}
+
+  yaml@2.9.0: {}
 
   yargs-parser@22.0.0: {}
 
