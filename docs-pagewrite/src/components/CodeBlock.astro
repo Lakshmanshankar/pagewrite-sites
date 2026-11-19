@@ -1,0 +1,90 @@
+---
+const {
+  'data-language': lang = 'text',
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+---
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-lang">{lang}</span>
+    <button class="copy-btn" type="button" aria-label="Copy code">Copy</button>
+  </div>
+  <pre class={className} style={style} {...rest}><slot /></pre>
+</div>
+
+<style>
+  .code-block {
+    border: 1px solid var(--border-line, #30363d);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    background: var(--code-bg, #0d1117);
+  }
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.75rem 0.4rem 1rem;
+    background: var(--secondary, #161b22);
+    border-bottom: 1px solid var(--border-line, #30363d);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.8rem;
+  }
+  .code-lang {
+    color: var(--text-muted, #8b949e);
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+  .copy-btn {
+    background: transparent;
+    color: var(--text, #c9d1d9);
+    border: 1px solid var(--border-line, #30363d);
+    border-radius: 6px;
+    padding: 0.2rem 0.6rem;
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .copy-btn:hover {
+    background: var(--accent, #21262d);
+  }
+  .code-block :global(pre) {
+    margin: 0 !important;
+    padding: 1rem !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow-x: auto;
+  }
+</style>
+
+<script>
+  function setupCodeBlockCopyButtons() {
+    document.querySelectorAll<HTMLElement>('.code-block').forEach((block) => {
+      const btn = block.querySelector<HTMLButtonElement>('.copy-btn');
+      const code = block.querySelector('pre code') || block.querySelector('pre');
+      if (!btn || !code) return;
+      if (btn.dataset.copyBound === 'true') return;
+      btn.dataset.copyBound = 'true';
+
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(code.textContent ?? '');
+          btn.textContent = 'Copied!';
+        } catch {
+          btn.textContent = 'Failed';
+        }
+        setTimeout(() => (btn.textContent = 'Copy'), 1500);
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupCodeBlockCopyButtons);
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setupCodeBlockCopyButtons();
+  }
+</script>

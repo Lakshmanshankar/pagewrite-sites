@@ -1,11 +1,14 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import Header from '../components/docs/Header.astro';
 import Sidebar from '../components/docs/Sidebar.astro';
-import TableOfContents from '../components/docs/TableOfContents.astro';
 import Footer from '../components/layout/Footer.astro';
-import PageActions from '../components/ui/PageActions.astro';
 import Pagination from '../components/ui/Pagination.astro';
+import PagewriteScript from './Scripts.astro'
 import '../styles/global.css';
+
+import { TableOfContent, Header as MetaHeader } from 'pagewrite-ui/docs';
+import { ContextMenu } from 'pagewrite-ui/components';
 
 interface Heading {
   depth: number;
@@ -22,55 +25,71 @@ interface PageLink {
 interface Props {
   title: string;
   description?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string[];
+  noindex?: boolean;
   isDocsPage?: boolean;
   activeSlug?: string;
   headings?: Heading[];
   activeTab?: 'docs' | 'showcase' | 'api' | 'home';
   prev?: PageLink;
   next?: PageLink;
+  lastModified?: string;
 }
 
 const {
   title,
   description = "Pagewrite visual documentation CMS theme for Astro",
+  metaTitle,
+  metaDescription,
+  metaKeywords,
+  noindex,
   isDocsPage = false,
   activeSlug,
   headings = [],
   activeTab = 'home',
   prev,
-  next
+  next,
+  lastModified
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="h-full dark">
+<html lang="en" class="h-full dark bg-background text-text">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <MetaHeader 
+      title={metaTitle ? `${metaTitle} | Pagewrite Docs` : `${title} | Pagewrite Docs`}
+      description={metaDescription || description}
+      keywords={metaKeywords}
+      noindex={noindex}
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title} | Pagewrite Docs</title>
-    <meta name="description" content={description} />
-    
     {/* Load Google Fonts */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <PagewriteScript />
     {/* Theme Initializer Script */}
     <script is:inline>
-      if (
-        localStorage.theme === 'light' ||
-        (!('theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)
-      ) {
-        document.documentElement.classList.add('light');
-        document.documentElement.classList.remove('dark');
-      } else {
-        document.documentElement.classList.remove('light');
-        document.documentElement.classList.add('dark');
-      }
+      const applyTheme = () => {
+        if (
+          localStorage.theme === 'light' ||
+          (!('theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.remove('light');
+          document.documentElement.classList.add('dark');
+        }
+      };
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
     </script>
+    <ClientRouter />
   </head>
-  <body class="h-full bg-bg-page text-text-main antialiased selection:bg-primary-500/20 selection:text-primary-300">
+  <body class="h-full bg-background text-text antialiased selection:bg-brand-color/20">
     <div class="min-h-full flex flex-col">
       {/* Header navbar */}
       <Header activeTab={activeTab} />
@@ -88,7 +107,7 @@ const {
                   <div class="w-full max-w-3xl">
                     <div class="mb-8 pb-6 border-b border-border-line/60 flex items-start justify-between gap-4">
                       <div class="w-[80%]">
-                        <h1 class="text-3xl sm:text-4xl font-bold font-heading text-text-title tracking-tight mb-3 capitalize">
+                        <h1 class="text-3xl sm:text-4xl font-semibold font-heading text-text-title tracking-tight mb-3 capitalize">
                           {title === 'index' ? 'Overview' : title.replace(/-/g, ' ')}
                         </h1>
                         {description && description !== "Pagewrite visual documentation CMS theme for Astro" && (
@@ -98,13 +117,19 @@ const {
                         )}
                       </div>
                       <div class="w-[20%] flex justify-end">
-                        <PageActions />
+                        <ContextMenu />
                       </div>
                     </div>
 
-                    <article class="prose max-w-none w-full animate-fade-in mt-2">
+                    <article class="prose w-full animate-fade-in mt-2 max-w-[720px]">
                       <slot />
                     </article>
+                    
+                    {isDocsPage && lastModified && (
+                      <div class="mt-10 mb-2 text-sm text-text-muted flex justify-end items-center">
+                        Last updated on&nbsp;<span class="last-modified-time font-medium" data-time={lastModified}>{new Date(lastModified).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      </div>
+                    )}
                     
                     {isDocsPage && (prev || next) && (
                       <Pagination prev={prev} next={next} />
@@ -113,8 +138,7 @@ const {
                   <Footer />
                 </main>
                 
-                {/* Right Table of Contents */}
-                <TableOfContents headings={headings} />
+                <TableOfContent headings={headings} />
               </div>
             </div>
           </div>
@@ -132,34 +156,41 @@ const {
     </div>
 
     <script>
-      // Add copy buttons to code blocks
-      const codeBlocks = document.querySelectorAll('.astro-code');
-      codeBlocks.forEach((block) => {
-        // Create a wrapper for relative positioning
-        const wrapper = document.createElement('div');
-        wrapper.className = 'code-wrapper group';
-        block.parentNode.insertBefore(wrapper, block);
-        wrapper.appendChild(block);
-
-        const copyButton = document.createElement('button');
-        copyButton.className = 'copy-btn';
-        copyButton.textContent = 'Copy';
-        copyButton.setAttribute('aria-label', 'Copy code to clipboard');
-        
-        copyButton.addEventListener('click', async () => {
-          const code = block.querySelector('code')?.innerText || block.innerText;
-          try {
-            await navigator.clipboard.writeText(code);
-            copyButton.textContent = 'Copied!';
-            setTimeout(() => {
-              copyButton.textContent = 'Copy';
-            }, 2000);
-          } catch (err) {
-            console.error('Failed to copy text: ', err);
+      document.addEventListener('astro:page-load', () => {
+        // Add wrappers to markdown tables for responsive horizontal scrolling
+        const tables = document.querySelectorAll('.prose table');
+        tables.forEach((table) => {
+          if (table.parentElement?.classList.contains('table-wrapper')) return;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'table-wrapper overflow-x-auto max-w-full my-6';
+          // Move the my-6 margin from the table to the wrapper, if needed.
+          // Since table already has my-6 from tailwind apply, it might double up,
+          // but we can just let tailwind handle it or remove margin from table via JS.
+          table.style.marginTop = '0';
+          table.style.marginBottom = '0';
+          if (table.parentNode) {
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
           }
         });
-        
-        wrapper.appendChild(copyButton);
+
+
+        // Format last modified times to local timezone
+        const timeElements = document.querySelectorAll('.last-modified-time');
+        timeElements.forEach((el) => {
+          const isoTime = el.getAttribute('data-time');
+          if (isoTime) {
+            const date = new Date(isoTime);
+            el.textContent = new Intl.DateTimeFormat(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              timeZoneName: 'short'
+            }).format(date);
+          }
+        });
       });
     </script>
   </body>

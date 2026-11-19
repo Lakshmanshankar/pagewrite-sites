@@ -1,0 +1,19 @@
+:root {
+  --background: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666666;
+  --text-title: #000000;
+  --brand-color: #3b82f6; /* blue-500 */
+  --border: #e5e5e5;
+  --card-bg: #f9f9f9;
+}
+
+:root.dark {
+  --background: #0a0a0a;
+  --text: #e5e5e5;
+  --text-muted: #a3a3a3;
+  --text-title: #ffffff;
+  --brand-color: #60a5fa; /* blue-400 */
+  --border: #262626;
+  --card-bg: #171717;
+}

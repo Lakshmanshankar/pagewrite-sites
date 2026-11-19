@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "./variable.css";
+@import "./typography.css";
+
+@theme {
+  --color-background: var(--background);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-title: var(--text-title);
+  --color-brand: var(--brand-color);
+  --color-border: var(--border);
+  --color-card-bg: var(--card-bg);
+
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+}

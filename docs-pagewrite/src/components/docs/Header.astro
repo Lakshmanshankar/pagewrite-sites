@@ -7,7 +7,7 @@ const { activeTab = 'home' } = Astro.props;
 import lightLogo from '../../assets/pagewrite.svg';
 import darkLogo from '../../assets/pagewrite-dark.svg';
 ---
-<header class="md:hidden fixed top-0 left-0 right-0 z-40 border-b border-border-line bg-bg-sidebar/70 backdrop-blur-md">
+<header class="md:hidden fixed top-0 left-0 right-0 z-40 border-b border-border-line bg-background/70 backdrop-blur-md">
   <div class="px-4 h-14 flex items-center justify-between">
     
     {/* Left: Brand Logo */}
@@ -19,7 +19,7 @@ import darkLogo from '../../assets/pagewrite-dark.svg';
     {/* Mobile drawer trigger */}
     <button
       id="mobile-menu-toggle"
-      class="flex items-center justify-center p-1.5 text-text-muted hover:text-text-title hover:bg-bg-card border border-border-line rounded-lg transition-colors cursor-pointer"
+      class="flex items-center justify-center p-1.5 text-text-muted hover:text-text-title hover:bg-secondary border border-border-line rounded-lg transition-colors cursor-pointer"
       aria-label="Toggle navigation menu"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hamburger-icon"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>

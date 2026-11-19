@@ -1,0 +1,83 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogCard from '../components/ui/BlogCard.astro';
+import ProjectCard from '../components/ui/ProjectCard.astro';
+import WorkTimeline from '../components/ui/WorkTimeline.astro';
+
+// Fetch collections
+const allPosts = await getCollection('blog', ({ data }) => {
+  return data.draft !== true;
+});
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order).slice(0, 4);
+
+const allWork = await getCollection('work');
+const sortedWork = allWork.sort((a, b) => b.data.dateStart.valueOf() - a.data.dateStart.valueOf());
+---
+
+<BaseLayout title="My Blog & Portfolio">
+  <section class="mb-16 mt-8">
+    <h1 class="text-4xl font-bold text-text-title mb-4 tracking-tight">Hi, I'm Lakshman</h1>
+    <p class="text-lg text-text-muted max-w-2xl">
+      I build fast, minimal, and accessible web experiences. Currently exploring Astro, Tailwind CSS, and edge computing.
+    </p>
+  </section>
+
+  <section class="mb-16">
+    <h2 class="text-2xl font-semibold text-text-title mb-6">Experience</h2>
+    <div class="ml-2">
+      {sortedWork.map(async (work) => {
+        const { Content } = await render(work);
+        return (
+          <WorkTimeline 
+            company={work.data.company} 
+            role={work.data.role} 
+            dateStart={work.data.dateStart} 
+            dateEnd={work.data.dateEnd} 
+            tech={work.data.tech}
+          >
+            <Content />
+          </WorkTimeline>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="mb-16">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-semibold text-text-title">Selected Projects</h2>
+      <a href="/projects" class="text-sm text-brand hover:underline">View all →</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {sortedProjects.map((project) => (
+        <ProjectCard 
+          title={project.data.title} 
+          description={project.data.description} 
+          demoURL={project.data.demoURL} 
+          repoURL={project.data.repoURL} 
+          image={project.data.image} 
+        />
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-semibold text-text-title">Latest Posts</h2>
+      <a href="/blog" class="text-sm text-brand hover:underline">View all →</a>
+    </div>
+    <div class="flex flex-col">
+      {sortedPosts.map((post) => (
+        <BlogCard 
+          id={post.id} 
+          title={post.data.title} 
+          description={post.data.description} 
+          pubDate={post.data.pubDate} 
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

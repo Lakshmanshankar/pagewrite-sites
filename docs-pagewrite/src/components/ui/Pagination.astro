@@ -1,4 +1,6 @@
 ---
+import {ChevronRight, ChevronLeft} from 'pagewrite-ui/icons';
+
 interface PageLink {
   title: string;
   url: string;
@@ -9,39 +11,38 @@ interface Props {
   prev?: PageLink;
   next?: PageLink;
 }
-
 const { prev, next } = Astro.props;
 ---
-
-<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-12 pt-8 border-t border-border-line">
+<div class="bg-background flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-12 pt-8 border-t border-border-line">
   {prev ? (
     <a 
       href={prev.url} 
-    class="flex-1 group flex flex-col p-4 border border-border-line rounded-lg bg-bg-card/50 hover:border-primary-500 hover:bg-bg-page hover-lift transition-interactive text-left"
+      class="flex-1 group flex flex-col p-4 border border-border-line rounded-md bg-secondary/50 hover:bg-background transition-interactive text-left"
     >
-      <div class="flex items-center gap-2 mb-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-muted group-hover:text-primary-500 transition-colors"><path d="m15 18-6-6 6-6"/></svg>
-        <span class="text-base font-semibold text-text-title group-hover:text-primary-500 transition-colors line-clamp-1">{prev.title}</span>
+      <div class="flex items-center gap-2 mb-2 text-sm text-text-muted group-hover:text-text transition-colors">
+        <ChevronLeft width="16" height="16" />
+        <span class="font-medium">Previous</span>
       </div>
+      <span class="text-base font-semibold text-text-title group-hover:text-text transition-colors line-clamp-1">{prev.title}</span>
       {prev.description && (
-        <span class="text-sm text-text-muted line-clamp-2 ml-6">{prev.description}</span>
+        <span class="text-sm text-text-muted line-clamp-2 mt-1">{prev.description}</span>
       )}
     </a>
   ) : (
     <div class="flex-1"></div>
   )}
-
   {next ? (
     <a 
       href={next.url} 
-      class="flex-1 group flex flex-col p-4 border border-border-line rounded-lg bg-bg-card/50 hover:border-primary-500 hover:bg-bg-page hover-lift transition-interactive text-right"
+      class="flex-1 group flex flex-col p-4 border border-border-line rounded-md bg-secondary/50 hover:bg-background transition-interactive text-right"
     >
-      <div class="flex items-center justify-end gap-2 mb-1">
-        <span class="text-base font-semibold text-text-title group-hover:text-primary-500 transition-colors line-clamp-1">{next.title}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-muted group-hover:text-primary-500 transition-colors"><path d="m9 18 6-6-6-6"/></svg>
+      <div class="flex items-center justify-end gap-2 mb-2 text-sm text-text-muted group-hover:text-text transition-colors">
+        <span class="font-medium">Next</span>
+        <ChevronRight width="16" height="16" />
       </div>
+      <span class="text-base font-semibold text-text-title group-hover:text-text transition-colors line-clamp-1">{next.title}</span>
       {next.description && (
-        <span class="text-sm text-text-muted line-clamp-2 mr-6">{next.description}</span>
+        <span class="text-sm text-text-muted line-clamp-2 mt-1">{next.description}</span>
       )}
     </a>
   ) : (

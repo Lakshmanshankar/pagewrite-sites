@@ -1,11 +1,13 @@
 ---
 import { getCollection, render } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import NodeVariant from '../components/docs/NodeVariant.astro';
 import Card from '../components/docs/Card.astro';
-import pagemap from '../content/docs/pagemap.json';
+import CodeBlock from '../components/CodeBlock.astro';
 
-// Flatten the pagemap
+// Flatten the page tree
 function flattenPages(nodes: any[]): any[] {
   let flat: any[] = [];
   for (const node of nodes) {
@@ -17,8 +19,6 @@ function flattenPages(nodes: any[]): any[] {
   }
   return flat;
 }
-
-const flatPagemap = flattenPages(pagemap);
 
 export async function getStaticPaths() {
   const docs = await getCollection('docs');
@@ -40,23 +40,41 @@ export async function getStaticPaths() {
 const { doc } = Astro.props;
 const { Content, headings } = await render(doc);
 
-const currentSlug = doc.id === 'index' ? '' : (doc.id.endsWith('/index') ? doc.id.slice(0, -6) : doc.id);
-const currentIndex = flatPagemap.findIndex((p: any) => p.slug === currentSlug);
+const pageTreeEntries = await getCollection('pageTree').catch(() => []);
+const pageTree = (pageTreeEntries ?? [])
+  .sort((a: any, b: any) => (a.data?.order ?? a.order ?? 0) - (b.data?.order ?? b.order ?? 0))
+  .map((e: any) => e.data ?? e);
+const flatPagemap = flattenPages(pageTree);
+
+function normalizeSlug(slug?: string): string {
+  if (!slug || slug === 'index') return '';
+  if (slug.endsWith('/index')) return slug.slice(0, -6);
+  return slug;
+}
+
+const currentSlug = normalizeSlug(doc.id);
+const currentIndex = flatPagemap.findIndex((p: any) => normalizeSlug(p.slug) === currentSlug);
 
 let prev = undefined;
 let next = undefined;
 
 const allDocs = await getCollection('docs');
 function getDocDescription(slug: string) {
-  const targetDoc = allDocs.find((d: any) => d.id === slug || d.id === `${slug}/index` || d.id === `${slug}.mdx`);
+  const norm = normalizeSlug(slug);
+  const targetDoc = allDocs.find((d: any) => normalizeSlug(d.id) === norm || normalizeSlug(d.data?.slug) === norm);
   return targetDoc?.data?.description;
+}
+
+function getSlugUrl(slug: string): string {
+  const norm = normalizeSlug(slug);
+  return norm ? `/${norm}` : '/';
 }
 
 if (currentIndex > 0) {
   const prevSlug = flatPagemap[currentIndex - 1].slug;
   prev = {
     title: flatPagemap[currentIndex - 1].title,
-    url: `/${prevSlug}`,
+    url: getSlugUrl(prevSlug),
     description: getDocDescription(prevSlug)
   };
 }
@@ -64,21 +82,46 @@ if (currentIndex !== -1 && currentIndex < flatPagemap.length - 1) {
   const nextSlug = flatPagemap[currentIndex + 1].slug;
   next = {
     title: flatPagemap[currentIndex + 1].title,
-    url: `/${nextSlug}`,
+    url: getSlugUrl(nextSlug),
     description: getDocDescription(nextSlug)
   };
+}
+let lastModifiedStr = '';
+try {
+  let filePath = doc.filePath;
+  if (!filePath) {
+    const exts = ['', '.mdx', '.md', '/index.mdx', '/index.md'];
+    for (const ext of exts) {
+      const testPath = path.join(process.cwd(), 'src/content/docs', doc.id + ext);
+      if (fs.existsSync(testPath)) {
+        filePath = testPath;
+        break;
+      }
+    }
+  }
+  if (filePath) {
+    const stats = fs.statSync(filePath);
+    lastModifiedStr = stats.mtime.toISOString();
+  }
+} catch (e) {
+  console.error('Error reading file stats:', e);
 }
 ---
 
 <Layout
   title={doc.data.title}
   description={doc.data.description}
+  metaTitle={doc.data.metaTitle}
+  metaDescription={doc.data.metaDescription}
+  metaKeywords={doc.data.metaKeywords}
+  noindex={doc.data.noindex}
   isDocsPage={true}
   activeSlug={doc.id}
   headings={headings}
   activeTab="docs"
   prev={prev}
   next={next}
+  lastModified={lastModifiedStr}
 >
-  <Content components={{ NodeVariant, Card }} />
+  <Content components={{ NodeVariant, Card, pre: CodeBlock }} />
 </Layout>

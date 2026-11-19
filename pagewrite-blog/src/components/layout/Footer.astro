@@ -1,0 +1,12 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="w-full max-w-3xl mx-auto px-4 py-8 mt-12 border-t border-border flex flex-col md:flex-row items-center justify-between text-sm text-text-muted">
+  <p>&copy; {currentYear} My Blog. All rights reserved.</p>
+  <div class="flex gap-4 mt-4 md:mt-0">
+    <a href="/rss.xml" class="hover:text-text transition-colors">RSS</a>
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-text transition-colors">GitHub</a>
+    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="hover:text-text transition-colors">Twitter</a>
+  </div>
+</footer>

@@ -1,0 +1,39 @@
+---
+interface Props {
+  company: string;
+  role: string;
+  dateStart: Date;
+  dateEnd?: Date;
+  tech?: string[];
+}
+const { company, role, dateStart, dateEnd, tech } = Astro.props;
+
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric'
+  });
+};
+---
+
+<div class="relative pl-6 pb-8 border-l border-border last:pb-0">
+  <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brand ring-4 ring-background"></div>
+  <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-1">
+    <h3 class="text-base font-semibold text-text-title">{role} <span class="text-text-muted font-normal text-sm">at {company}</span></h3>
+    <div class="text-xs text-text-muted font-mono mt-1 md:mt-0">
+      {formatDate(dateStart)} — {dateEnd ? formatDate(dateEnd) : 'Present'}
+    </div>
+  </div>
+  <div class="prose prose-sm prose-p:my-1 text-sm text-text">
+    <slot />
+  </div>
+  {tech && tech.length > 0 && (
+    <div class="flex flex-wrap gap-2 mt-3">
+      {tech.map((t) => (
+        <span class="px-2 py-0.5 text-xs font-medium bg-card-bg border border-border rounded-md text-text-muted">
+          {t}
+        </span>
+      ))}
+    </div>
+  )}
+</div>

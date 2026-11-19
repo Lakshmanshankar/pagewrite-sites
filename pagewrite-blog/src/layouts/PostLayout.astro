@@ -1,0 +1,22 @@
+---
+import BaseLayout from './BaseLayout.astro';
+const { title, description, pubDate } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="prose mx-auto">
+    <header class="mb-8">
+      <h1 class="mb-2">{title}</h1>
+      {pubDate && (
+        <time class="text-text-muted text-sm block">
+          {new Date(pubDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </time>
+      )}
+    </header>
+    <slot />
+  </article>
+</BaseLayout>

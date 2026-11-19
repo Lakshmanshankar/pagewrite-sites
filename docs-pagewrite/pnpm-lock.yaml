@@ -23,12 +23,21 @@ importers:
       astro-auto-import:
         specifier: ^0.5.1
         version: 0.5.1(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))
+      gsap:
+        specifier: ^3.15.1
+        version: 3.15.1
+      lenis:
+        specifier: ^1.3.27
+        version: 1.3.27
       pagefind:
         specifier: ^1.5.2
         version: 1.5.2
       pagewrite-astro:
-        specifier: ^0.1.10
-        version: 0.1.10(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+        specifier: ^0.1.16
+        version: 0.1.16(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      pagewrite-ui:
+        specifier: ^0.1.6
+        version: 0.1.6(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.1
@@ -1252,6 +1261,9 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
+  gsap@3.15.1:
+    resolution: {integrity: sha512-63yjWRFWj3QRP1UOuD8kcidCcy3nxb1mMRpwHr/xJRvPfm9GtWOXFAYUiL0ro1fgPq2nY53LR+98pAgy9BumBg==}
+
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
 
@@ -1355,6 +1367,20 @@ packages:
   kleur@4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
+
+  lenis@1.3.27:
+    resolution: {integrity: sha512-QIHNH4LIfWyLfgH/5K0aTGZgyFJJ7GfHNcaH/AIgyKjb8gstLh5siNGvrVqz1w5ClLXzOvllBVk7vby8JzUVPQ==}
+    peerDependencies:
+      '@nuxt/kit': '>=3.0.0'
+      react: '>=17.0.0'
+      vue: '>=3.0.0'
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      react:
+        optional: true
+      vue:
+        optional: true
 
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
@@ -1680,13 +1706,18 @@ packages:
     resolution: {integrity: sha512-XTUaK0hXMCu2jszWE584JGQT7y284TmMV9l/HX3rnG5uo3rHI/uHU56XTyyyPFjeWEBxECbAi0CaFDJOONtG0Q==}
     hasBin: true
 
-  pagewrite-astro@0.1.10:
-    resolution: {integrity: sha512-QY9XZZPW8FHCmPJ1luYvVpmUTesaYPadt/vK3WZq9GeN+3Q/w3L7FNO0NusqSTEMPYwcVw1TNW4jujcFxzAwYg==}
+  pagewrite-astro@0.1.16:
+    resolution: {integrity: sha512-CPJplO/3v+Jirr3X5Xd1F6Kfe4zz3sJ/QDu9nuYD7v98wS4tmTOZdMbILR55kYqOd7JKp/U9zYVB1dJhmC1u3Q==}
     engines: {node: '>=18.17.0'}
     hasBin: true
     peerDependencies:
-      astro: '>=4.0.0 || >=5.0.0'
+      astro: '>=5.0.0'
       vite: '>=4.0.0 || >=5.0.0 || >=6.0.0'
+
+  pagewrite-ui@0.1.6:
+    resolution: {integrity: sha512-aHUKp3I3dJLqt+WAy5neVCtJOl0NXWSDtrx3bntnAFEB2vqr2IdQOcaCZOkBqV5dHKzkeN+t+HKQnDD5K0uO+g==}
+    peerDependencies:
+      astro: ^4.0.0 || ^5.0.0
 
   parse-entities@4.0.2:
     resolution: {integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==}
@@ -3219,6 +3250,8 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
+  gsap@3.15.1: {}
+
   h3@1.15.11:
     dependencies:
       cookie-es: 1.2.3
@@ -3403,6 +3436,8 @@ snapshots:
   jsonc-parser@3.3.1: {}
 
   kleur@4.1.5: {}
+
+  lenis@1.3.27: {}
 
   lightningcss-android-arm64@1.32.0:
     optional: true
@@ -3983,11 +4018,15 @@ snapshots:
       '@pagefind/windows-arm64': 1.5.2
       '@pagefind/windows-x64': 1.5.2
 
-  pagewrite-astro@0.1.10(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)):
+  pagewrite-astro@0.1.16(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0))(vite@7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)):
     dependencies:
       astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
       vite: 7.3.5(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
       yaml: 2.9.0
+
+  pagewrite-ui@0.1.6(astro@6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)):
+    dependencies:
+      astro: 6.4.8(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(yaml@2.9.0)
 
   parse-entities@4.0.2:
     dependencies:

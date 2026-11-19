@@ -5,8 +5,8 @@ import AutoImport from 'astro-auto-import';
 import mdx from '@astrojs/mdx';
 
 import { loadEnv } from 'vite';
-import pagewriteAstro from 'pagewrite-astro';
-
+import { pagewriteAstro } from 'pagewrite-astro';
+//
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const docsBuildToken = env.PAGEWRITE_DOCS_BUILD_TOKEN || '';
 
@@ -23,9 +23,11 @@ export default defineConfig({
     }),
     AutoImport({
       imports: [
-        "./src/components/Image.astro",
-        "./src/components/Spacer.astro",
-        "./src/components/Callout.astro",
+        "./src/components/CodeBlock.astro",
+        "./src/components/mdx/FolderList.astro",
+        {
+          'pagewrite-ui/mdx': ['Callout', 'Image', 'Spacer', 'Columns', 'ColumnItem', 'ContactForm', 'Expand', 'Tabs', 'TabItem']
+        }
       ],
     }),
     mdx(),
@@ -37,6 +39,13 @@ export default defineConfig({
         light: "github-light",
         dark: "github-dark-high-contrast",
       },
+      transformers: [
+        {
+          pre(node) {
+            node.properties['data-language'] = this.options.lang;
+          },
+        },
+      ],
     },
   },
 

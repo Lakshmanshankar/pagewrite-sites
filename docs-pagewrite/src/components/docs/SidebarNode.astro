@@ -21,8 +21,10 @@ function capitalize(str: string): string {
 }
 
 function isNodeActive(node: PageNode, currentSlug?: string): boolean {
-  if (!currentSlug) return false;
-  return node.slug === currentSlug;
+  if (!currentSlug || !node.slug) return false;
+  if (node.slug === currentSlug) return true;
+  const normalize = (s: string) => s.replace(/\/index$/, '').replace(/^index$/, '');
+  return normalize(node.slug) === normalize(currentSlug);
 }
 
 function hasActiveDescendant(node: PageNode, currentSlug?: string): boolean {
@@ -42,39 +44,40 @@ function hasActiveDescendant(node: PageNode, currentSlug?: string): boolean {
     const folderTitle = capitalize(node.title);
     
     return (
-      <li class="list-none">
-        <details class="group" open={isOpen}>
-          <summary class="flex items-center justify-between px-2 py-1 text-sm rounded-md hover:bg-bg-card cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-            <span class="flex items-center gap-1">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2.5" 
-                stroke-linecap="round" 
-                stroke-linejoin="round" 
-                class="w-3 h-3 text-text-muted transition-transform duration-200 group-open:rotate-90"
-              >
-                <path d="m9 18 6-6-6-6"/>
-              </svg>
-              <span>{folderTitle}</span>
-            </span>
-          </summary>
-          <ul class="pl-2 border-l border-border-line/45 ml-3 mt-0.5 space-y-0.5">
-            <Astro.self 
-              nodes={node.children!} 
-              activeSlug={activeSlug} 
-              docMap={docMap} 
-              depth={depth + 1} 
-            />
-          </ul>
-        </details>
+      <li class="list-none folder-node">
+        <button type="button" class="folder-toggle w-full flex items-center justify-between px-2 py-1 text-sm rounded-md transition-colors duration-300 hover:bg-secondary cursor-pointer text-left">
+          <span>{folderTitle}</span>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            class={`text-text-muted transition-transform duration-300 folder-icon ${isOpen ? 'rotate-90' : ''}`}
+            style="width: 14px; height: 14px; min-width: 14px; flex-shrink: 0;"
+          >
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </button>
+        <div class={`folder-content grid transition-[grid-template-rows] duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+          <div class="overflow-hidden">
+            <ul class="pl-2 border-l border-border-line/45 ml-3 mt-0.5 space-y-0.5">
+              <Astro.self 
+                nodes={node.children!} 
+                activeSlug={activeSlug} 
+                docMap={docMap} 
+                depth={depth + 1} 
+              />
+            </ul>
+          </div>
+        </div>
       </li>
     );
   } else {
     const doc = docMap.get(node.id);
-    const isSelf = node.slug === activeSlug;
+    const isSelf = isNodeActive(node, activeSlug);
     const title = node.title === 'index' ? 'Overview' : (doc?.data?.title || node.title);
     const href = node.slug === 'index' ? '/' : `/${node.slug.endsWith('/index') ? node.slug.slice(0, -6) : node.slug}`;
     
@@ -82,10 +85,10 @@ function hasActiveDescendant(node: PageNode, currentSlug?: string): boolean {
       <li class="list-none">
         <a
           href={href}
-          class={`flex items-center px-2 py-1 text-sm rounded-md border transition-all ${
+          class={`flex items-center px-2 py-1 text-sm rounded-md border transition-all duration-300 ${
             isSelf
-              ? "bg-primary-500/5 text-primary-500 border-primary-500/10"
-              : "border-transparent hover:bg-bg-card"
+              ? "bg-brand-color/5 text-brand-color border-none"
+              : "border-transparent hover:bg-secondary"
           }`}
         >
           {title}
@@ -94,3 +97,31 @@ function hasActiveDescendant(node: PageNode, currentSlug?: string): boolean {
     );
   }
 })}
+
+<script>
+  // Event delegation to handle folder toggles (survives view transitions)
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const toggleBtn = target.closest('.folder-toggle');
+    if (toggleBtn) {
+      const node = toggleBtn.closest('.folder-node');
+      if (!node) return;
+      
+      const content = node.querySelector(':scope > .folder-content');
+      const icon = toggleBtn.querySelector('.folder-icon');
+      
+      if (content && icon) {
+        const isClosed = content.classList.contains('grid-rows-[0fr]');
+        if (isClosed) {
+          content.classList.remove('grid-rows-[0fr]');
+          content.classList.add('grid-rows-[1fr]');
+          icon.classList.add('rotate-90');
+        } else {
+          content.classList.remove('grid-rows-[1fr]');
+          content.classList.add('grid-rows-[0fr]');
+          icon.classList.remove('rotate-90');
+        }
+      }
+    }
+  });
+</script>

@@ -1,35 +1,29 @@
 @import "tailwindcss";
-@import "./variable.css";
+@source "../../node_modules/pagewrite-ui";
+
+@import "pagewrite-ui/styles/tailwind.css";
+@import "pagewrite-ui/styles/docs.css";
+
 @import "./typography.css";
+@import "./variable.css";
 @import "./animations.css";
 
 @theme {
-  /* Primary Theme Color Palette (Neutral Accent) */
-  --color-primary-400: var(--primary-400);
-  --color-primary-500: var(--primary-500);
+  --leading-heading: var(--heading-line-height);
+  --leading-paragraph: var(--paragraph-line-height);
+  --font-body: var(--font-body);
 
-  /* Semantic Theme Color Mappings */
-  --color-bg-page: var(--bg-page);
-  --color-bg-sidebar: var(--bg-sidebar);
-  --color-bg-card: var(--bg-card);
-  --color-text-main: var(--text-main);
-  --color-text-title: var(--text-title);
-  --color-text-muted: var(--text-muted);
-  --color-border-line: var(--border-line);
-  --color-border-card: var(--border-card);
+  --color-background: var(--background);
 
-  /* We map standard Tailwind classes to our custom variables */
-  --font-sans: var(--font-body);
-  --font-mono: var(--font-mono);
+  --color-brand-color: var(--brand-color);
 }
 
 /* Base custom styles */
 html {
   font-size: var(--text-base);
+  background: var(--background);
   scroll-behavior: smooth;
   scroll-padding-top: var(--space-10);
-  background-color: var(--color-bg-page);
-  color: var(--color-text-main);
   transition: background-color var(--duration-normal) var(--ease-standard), color var(--duration-normal) var(--ease-standard);
 }
 
@@ -42,7 +36,7 @@ html {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-card);
+  background: var(--color-border-line);
   border-radius: var(--radius);
 }
 ::-webkit-scrollbar-thumb:hover {

@@ -10,11 +10,11 @@ const { title, description, href, icon } = Astro.props;
 ---
 <a
   href={href}
-  class="group block p-5 border border-border-line rounded-xl bg-bg-card hover:bg-bg-card hover:border-border-focus transition-all duration-300 shadow-md relative overflow-hidden"
+  class="group block p-5 border border-border-line rounded-xl bg-secondary hover:bg-secondary hover:border-border-focus transition-all duration-300 shadow-md relative overflow-hidden"
 >
   <div class="flex items-start space-x-3.5">
     {icon && (
-      <div class="text-primary-400 p-2 rounded-lg bg-bg-page border border-border-line group-hover:border-border-focus transition-colors shrink-0">
+      <div class="text-brand-color-active p-2 rounded-lg bg-background border border-border-line group-hover:border-border-focus transition-colors shrink-0">
         <Fragment set:html={icon} />
       </div>
     )}
@@ -23,7 +23,7 @@ const { title, description, href, icon } = Astro.props;
         {title}
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block ml-1.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-text-muted"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </h3>
-      <p class="text-xs text-text-muted leading-relaxed group-hover:text-text-main transition-colors">
+      <p class="text-xs text-text-muted leading-relaxed group-hover:text-text transition-colors">
         {description}
       </p>
     </div>

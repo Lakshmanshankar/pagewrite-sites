@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  pubDate: Date;
+}
+const { id, title, description, pubDate } = Astro.props;
+---
+
+<a href={`/blog/${id}`} class="block group py-4 border-b border-border last:border-0 hover:bg-card-bg/50 -mx-4 px-4 rounded-lg transition-colors">
+  <h3 class="text-lg font-medium text-text-title group-hover:text-brand transition-colors mb-1">{title}</h3>
+  {description && <p class="text-text-muted text-sm mb-2">{description}</p>}
+  <time class="text-xs text-text-muted">
+    {new Date(pubDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })}
+  </time>
+</a>
